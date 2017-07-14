@@ -30,13 +30,13 @@ namespace EPocalipse.Json.Viewer
             {
                 _pluginsManager.Initialize();
             }
-            catch (Exception e)
+            catch( Exception e )
             {
-                MessageBox.Show(String.Format(Resources.ConfigMessage, e.Message), "Json Viewer", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show( String.Format( Resources.ConfigMessage, e.Message ), "Json Viewer", MessageBoxButtons.OK, MessageBoxIcon.Warning );
             }
         }
 
-        [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
+        [Editor( "System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof( UITypeEditor ) )]
         public string Json
         {
             get
@@ -45,7 +45,7 @@ namespace EPocalipse.Json.Viewer
             }
             set
             {
-                if (_json != value)
+                if( _json != value )
                 {
                     _json = value.Trim();
                     txtJson.Text = _json;
@@ -54,7 +54,7 @@ namespace EPocalipse.Json.Viewer
             }
         }
 
-        [DefaultValue(25)]
+        [DefaultValue( 25 )]
         public int MaxErrorCount
         {
             get
@@ -75,10 +75,10 @@ namespace EPocalipse.Json.Viewer
                 try
                 {
                     Reset();
-                    if (!String.IsNullOrEmpty(_json))
+                    if( !String.IsNullOrEmpty( _json ) )
                     {
-                        JsonObjectTree tree = JsonObjectTree.Parse(_json);
-                        VisualizeJsonTree(tree);
+                        JsonObjectTree tree = JsonObjectTree.Parse( _json );
+                        VisualizeJsonTree( tree );
                     }
                 }
                 finally
@@ -86,13 +86,13 @@ namespace EPocalipse.Json.Viewer
                     tvJson.EndUpdate();
                 }
             }
-            catch (JsonParseError e)
+            catch( JsonParseError e )
             {
-                GetParseErrorDetails(e);
+                GetParseErrorDetails( e );
             }
-            catch (Exception e)
+            catch( Exception e )
             {
-                ShowException(e);
+                ShowException( e );
             }
         }
 
@@ -105,36 +105,37 @@ namespace EPocalipse.Json.Viewer
             cbVisualizers.Items.Clear();
         }
 
-        private void GetParseErrorDetails(Exception parserError)
+        private void GetParseErrorDetails( Exception parserError )
         {
-            UnbufferedStringReader strReader = new UnbufferedStringReader(_json);
-            using (JsonReader reader = new JsonReader(strReader))
+            UnbufferedStringReader strReader = new UnbufferedStringReader( _json );
+            using( JsonReader reader = new JsonTextReader( strReader ) )
             {
                 try
                 {
-                    while (reader.Read()) { };
+                    while( reader.Read() )
+                    { };
                 }
-                catch (Exception e)
+                catch( Exception e )
                 {
                     _errorDetails._err = e.Message;
                     _errorDetails._pos = strReader.Position;
                 }
             }
-            if (_errorDetails.Error == null)
+            if( _errorDetails.Error == null )
                 _errorDetails._err = parserError.Message;
-            if (_errorDetails.Position == 0)
+            if( _errorDetails.Position == 0 )
                 _errorDetails._pos = _json.Length;
-            if (!txtJson.ContainsFocus)
-                MarkError(_errorDetails);
-            ShowInfo(_errorDetails);
+            if( !txtJson.ContainsFocus )
+                MarkError( _errorDetails );
+            ShowInfo( _errorDetails );
         }
 
-        private void MarkError(ErrorDetails _errorDetails)
+        private void MarkError( ErrorDetails _errorDetails )
         {
             ignoreSelChange = true;
             try
             {
-                txtJson.Select(Math.Max(0, _errorDetails.Position - 1), 10);
+                txtJson.Select( Math.Max( 0, _errorDetails.Position - 1 ), 10 );
                 txtJson.ScrollToCaret();
             }
             finally
@@ -143,31 +144,31 @@ namespace EPocalipse.Json.Viewer
             }
         }
 
-        private void VisualizeJsonTree(JsonObjectTree tree)
+        private void VisualizeJsonTree( JsonObjectTree tree )
         {
-            AddNode(tvJson.Nodes, tree.Root);
+            AddNode( tvJson.Nodes, tree.Root );
             JsonViewerTreeNode node = GetRootNode();
-            InitVisualizers(node);
+            InitVisualizers( node );
             node.Expand();
             tvJson.SelectedNode = node;
         }
 
-        private void AddNode(TreeNodeCollection nodes, JsonObject jsonObject)
+        private void AddNode( TreeNodeCollection nodes, JsonObject jsonObject )
         {
-            JsonViewerTreeNode newNode = new JsonViewerTreeNode(jsonObject);
-            nodes.Add(newNode);
+            JsonViewerTreeNode newNode = new JsonViewerTreeNode( jsonObject );
+            nodes.Add( newNode );
             newNode.Text = jsonObject.Text;
             newNode.Tag = jsonObject;
             newNode.ImageIndex = (int)jsonObject.JsonType;
             newNode.SelectedImageIndex = newNode.ImageIndex;
 
-            foreach (JsonObject field in jsonObject.Fields)
+            foreach( JsonObject field in jsonObject.Fields )
             {
-                AddNode(newNode.Nodes, field);
+                AddNode( newNode.Nodes, field );
             }
         }
 
-        [Browsable(false)]
+        [Browsable( false )]
         public ErrorDetails ErrorDetails
         {
             get
@@ -181,7 +182,7 @@ namespace EPocalipse.Json.Viewer
             Json = String.Empty;
         }
 
-        public void ShowInfo(string info)
+        public void ShowInfo( string info )
         {
             lblError.Text = info;
             lblError.Tag = null;
@@ -189,9 +190,9 @@ namespace EPocalipse.Json.Viewer
             tabControl.SelectedTab = pageTextView;
         }
 
-        public void ShowInfo(ErrorDetails error)
+        public void ShowInfo( ErrorDetails error )
         {
-            ShowInfo(error.Error);
+            ShowInfo( error.Error );
             lblError.Text = error.Error;
             lblError.Tag = error;
             lblError.Enabled = true;
@@ -203,7 +204,7 @@ namespace EPocalipse.Json.Viewer
             lblError.Text = String.Empty;
         }
 
-        [Browsable(false)]
+        [Browsable( false )]
         public bool HasErrors
         {
             get
@@ -212,38 +213,38 @@ namespace EPocalipse.Json.Viewer
             }
         }
 
-        private void txtJson_TextChanged(object sender, EventArgs e)
+        private void txtJson_TextChanged( object sender, EventArgs e )
         {
             Json = txtJson.Text;
             btnViewSelected.Checked = false;
         }
 
-        private void txtFind_TextChanged(object sender, EventArgs e)
+        private void txtFind_TextChanged( object sender, EventArgs e )
         {
             txtFind.BackColor = SystemColors.Window;
-            FindNext(true, true);
+            FindNext( true, true );
         }
 
-        public bool FindNext(bool includeSelected)
+        public bool FindNext( bool includeSelected )
         {
-            return FindNext(txtFind.Text, includeSelected);
+            return FindNext( txtFind.Text, includeSelected );
         }
 
-        public void FindNext(bool includeSelected, bool fromUI)
+        public void FindNext( bool includeSelected, bool fromUI )
         {
-            if (!FindNext(includeSelected) && fromUI)
+            if( !FindNext( includeSelected ) && fromUI )
                 txtFind.BackColor = Color.LightCoral;
         }
 
-        public bool FindNext(string text, bool includeSelected)
+        public bool FindNext( string text, bool includeSelected )
         {
             TreeNode startNode = tvJson.SelectedNode;
-            if (startNode == null && HasNodes())
+            if( startNode == null && HasNodes() )
                 startNode = GetRootNode();
-            if (startNode != null)
+            if( startNode != null )
             {
-                startNode = FindNext(startNode, text, includeSelected);
-                if (startNode != null)
+                startNode = FindNext( startNode, text, includeSelected );
+                if( startNode != null )
                 {
                     tvJson.SelectedNode = startNode;
                     return true;
@@ -252,84 +253,84 @@ namespace EPocalipse.Json.Viewer
             return false;
         }
 
-        public TreeNode FindNext(TreeNode startNode, string text, bool includeSelected)
+        public TreeNode FindNext( TreeNode startNode, string text, bool includeSelected )
         {
-            if (text == String.Empty)
+            if( text == String.Empty )
                 return startNode;
 
-            if (includeSelected && IsMatchingNode(startNode, text))
+            if( includeSelected && IsMatchingNode( startNode, text ) )
                 return startNode;
 
             TreeNode originalStartNode = startNode;
-            startNode = GetNextNode(startNode);
+            startNode = GetNextNode( startNode );
             text = text.ToLower();
-            while (startNode != originalStartNode)
+            while( startNode != originalStartNode )
             {
-                if (IsMatchingNode(startNode, text))
+                if( IsMatchingNode( startNode, text ) )
                     return startNode;
-                startNode = GetNextNode(startNode);
+                startNode = GetNextNode( startNode );
             }
 
             return null;
         }
 
-        private TreeNode GetNextNode(TreeNode startNode)
+        private TreeNode GetNextNode( TreeNode startNode )
         {
             TreeNode next = startNode.FirstNode ?? startNode.NextNode;
-            if (next == null)
+            if( next == null )
             {
-                while (startNode != null && next == null)
+                while( startNode != null && next == null )
                 {
                     startNode = startNode.Parent;
-                    if (startNode != null)
+                    if( startNode != null )
                         next = startNode.NextNode;
                 }
-                if (next == null)
+                if( next == null )
                 {
                     next = GetRootNode();
-                    FlashControl(txtFind, Color.Cyan);
+                    FlashControl( txtFind, Color.Cyan );
                 }
             }
             return next;
         }
 
-        private bool IsMatchingNode(TreeNode startNode, string text)
+        private bool IsMatchingNode( TreeNode startNode, string text )
         {
-            return (startNode.Text.ToLower().Contains(text));
+            return ( startNode.Text.ToLower().Contains( text ) );
         }
 
         private JsonViewerTreeNode GetRootNode()
         {
-            if (tvJson.Nodes.Count > 0)
+            if( tvJson.Nodes.Count > 0 )
                 return (JsonViewerTreeNode)tvJson.Nodes[0];
             return null;
         }
 
         private bool HasNodes()
         {
-            return (tvJson.Nodes.Count > 0);
+            return ( tvJson.Nodes.Count > 0 );
         }
 
-        private void txtFind_KeyDown(object sender, KeyEventArgs e)
+        private void txtFind_KeyDown( object sender, KeyEventArgs e )
         {
-            if (e.KeyCode == Keys.Enter)
+            if( e.KeyCode == Keys.Enter )
             {
-                FindNext(false, true);
+                FindNext( false, true );
             }
-            if (e.KeyCode == Keys.Escape)
+            if( e.KeyCode == Keys.Escape )
             {
                 HideFind();
             }
         }
 
-        private void FlashControl(Control control, Color color)
+        private void FlashControl( Control control, Color color )
         {
             Color prevColor = control.BackColor;
             try
             {
                 control.BackColor = color;
                 control.Refresh();
-                Thread.Sleep(25);
+                Thread.Sleep( 25 );
             }
             finally
             {
@@ -338,66 +339,66 @@ namespace EPocalipse.Json.Viewer
             }
         }
 
-        public void ShowTab(Tabs tab)
+        public void ShowTab( Tabs tab )
         {
             tabControl.SelectedIndex = (int)tab;
         }
 
-        private void btnFormat_Click(object sender, EventArgs e)
+        private void btnFormat_Click( object sender, EventArgs e )
         {
             try
             {
                 string json = txtJson.Text;
                 JsonSerializer s = new JsonSerializer();
-                JsonReader reader = new JsonReader(new StringReader(json));
-                Object jsonObject = s.Deserialize(reader);
-                if (jsonObject != null)
+                JsonReader reader = new JsonTextReader( new StringReader( json ) );
+                object jsonObject = s.Deserialize( reader );
+                if( jsonObject != null )
                 {
                     StringWriter sWriter = new StringWriter();
-                    JsonWriter writer = new JsonWriter(sWriter);
+                    JsonWriter writer = new JsonTextWriter( sWriter );
                     writer.Formatting = Formatting.Indented;
-                    writer.Indentation = 4;
-                    writer.IndentChar = ' ';
-                    s.Serialize(writer, jsonObject);
+                    //writer..Indentation = 4;
+                    //writer.IndentChar = ' ';
+                    s.Serialize( writer, jsonObject );
                     txtJson.Text = sWriter.ToString();
                 }
             }
-            catch (Exception ex)
+            catch( Exception ex )
             {
-                ShowException(ex);
+                ShowException( ex );
             }
         }
 
-        private void ShowException(Exception e)
+        private void ShowException( Exception e )
         {
-            MessageBox.Show(this, e.Message, "Json Viewer", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show( this, e.Message, "Json Viewer", MessageBoxButtons.OK, MessageBoxIcon.Error );
         }
 
-        private void btnStripToSqr_Click(object sender, EventArgs e)
+        private void btnStripToSqr_Click( object sender, EventArgs e )
         {
-            StripTextTo('[', ']');
+            StripTextTo( '[', ']' );
         }
 
-        private void btnStripToCurly_Click(object sender, EventArgs e)
+        private void btnStripToCurly_Click( object sender, EventArgs e )
         {
-            StripTextTo('{', '}');
+            StripTextTo( '{', '}' );
         }
 
-        private void StripTextTo(char sChr, char eChr)
+        private void StripTextTo( char sChr, char eChr )
         {
             string text = txtJson.Text;
-            int start = text.IndexOf(sChr);
-            int end = text.LastIndexOf(eChr);
+            int start = text.IndexOf( sChr );
+            int end = text.LastIndexOf( eChr );
             int newLen = end - start + 1;
-            if (newLen > 1)
+            if( newLen > 1 )
             {
-                txtJson.Text = text.Substring(start, newLen);
+                txtJson.Text = text.Substring( start, newLen );
             }
         }
 
-        private void tvJson_AfterSelect(object sender, TreeViewEventArgs e)
+        private void tvJson_AfterSelect( object sender, TreeViewEventArgs e )
         {
-            if (_pluginsManager.DefaultVisualizer == null)
+            if( _pluginsManager.DefaultVisualizer == null )
                 return;
 
             cbVisualizers.BeginUpdate();
@@ -406,21 +407,21 @@ namespace EPocalipse.Json.Viewer
             {
                 JsonViewerTreeNode node = (JsonViewerTreeNode)e.Node;
                 IJsonVisualizer lastActive = node.LastVisualizer;
-                if (lastActive == null)
+                if( lastActive == null )
                     lastActive = (IJsonVisualizer)cbVisualizers.SelectedItem;
-                if (lastActive == null)
+                if( lastActive == null )
                     lastActive = _pluginsManager.DefaultVisualizer;
 
                 cbVisualizers.Items.Clear();
-                cbVisualizers.Items.AddRange(node.Visualizers.ToArray());
-                int index = cbVisualizers.Items.IndexOf(lastActive);
-                if (index != -1)
+                cbVisualizers.Items.AddRange( node.Visualizers.ToArray() );
+                int index = cbVisualizers.Items.IndexOf( lastActive );
+                if( index != -1 )
                 {
                     cbVisualizers.SelectedIndex = index;
                 }
                 else
                 {
-                    cbVisualizers.SelectedIndex = cbVisualizers.Items.IndexOf(_pluginsManager.DefaultVisualizer);
+                    cbVisualizers.SelectedIndex = cbVisualizers.Items.IndexOf( _pluginsManager.DefaultVisualizer );
                 }
             }
             finally
@@ -434,25 +435,25 @@ namespace EPocalipse.Json.Viewer
         private void ActivateVisualizer()
         {
             IJsonVisualizer visualizer = (IJsonVisualizer)cbVisualizers.SelectedItem;
-            if (visualizer != null)
+            if( visualizer != null )
             {
                 JsonObject jsonObject = GetSelectedTreeNode().JsonObject;
-                Control visualizerCtrl = visualizer.GetControl(jsonObject);
-                if (_lastVisualizerControl != visualizerCtrl)
+                Control visualizerCtrl = visualizer.GetControl( jsonObject );
+                if( _lastVisualizerControl != visualizerCtrl )
                 {
-                    pnlVisualizer.Controls.Remove(_lastVisualizerControl);
-                    pnlVisualizer.Controls.Add(visualizerCtrl);
+                    pnlVisualizer.Controls.Remove( _lastVisualizerControl );
+                    pnlVisualizer.Controls.Add( visualizerCtrl );
                     visualizerCtrl.Dock = DockStyle.Fill;
                     _lastVisualizerControl = visualizerCtrl;
                 }
-                visualizer.Visualize(jsonObject);
+                visualizer.Visualize( jsonObject );
             }
         }
 
 
-        private void cbVisualizers_SelectedIndexChanged(object sender, EventArgs e)
+        private void cbVisualizers_SelectedIndexChanged( object sender, EventArgs e )
         {
-            if (!_updating && GetSelectedTreeNode() != null)
+            if( !_updating && GetSelectedTreeNode() != null )
             {
                 ActivateVisualizer();
                 GetSelectedTreeNode().LastVisualizer = (IJsonVisualizer)cbVisualizers.SelectedItem;
@@ -464,44 +465,44 @@ namespace EPocalipse.Json.Viewer
             return (JsonViewerTreeNode)tvJson.SelectedNode;
         }
 
-        private void tvJson_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+        private void tvJson_BeforeExpand( object sender, TreeViewCancelEventArgs e )
         {
-            foreach (JsonViewerTreeNode node in e.Node.Nodes)
+            foreach( JsonViewerTreeNode node in e.Node.Nodes )
             {
-                InitVisualizers(node);
+                InitVisualizers( node );
             }
         }
 
-        private void InitVisualizers(JsonViewerTreeNode node)
+        private void InitVisualizers( JsonViewerTreeNode node )
         {
-            if (!node.Initialized)
+            if( !node.Initialized )
             {
                 node.Initialized = true;
                 JsonObject jsonObject = node.JsonObject;
-                foreach (ICustomTextProvider textVis in _pluginsManager.TextVisualizers)
+                foreach( ICustomTextProvider textVis in _pluginsManager.TextVisualizers )
                 {
-                    if (textVis.CanVisualize(jsonObject))
-                        node.TextVisualizers.Add(textVis);
+                    if( textVis.CanVisualize( jsonObject ) )
+                        node.TextVisualizers.Add( textVis );
                 }
 
                 node.RefreshText();
 
-                foreach (IJsonVisualizer visualizer in _pluginsManager.Visualizers)
+                foreach( IJsonVisualizer visualizer in _pluginsManager.Visualizers )
                 {
-                    if (visualizer.CanVisualize(jsonObject))
-                        node.Visualizers.Add(visualizer);
+                    if( visualizer.CanVisualize( jsonObject ) )
+                        node.Visualizers.Add( visualizer );
                 }
             }
         }
 
-        private void btnCloseFind_Click(object sender, EventArgs e)
+        private void btnCloseFind_Click( object sender, EventArgs e )
         {
             HideFind();
         }
 
-        private void JsonViewer_KeyDown(object sender, KeyEventArgs e)
+        private void JsonViewer_KeyDown( object sender, KeyEventArgs e )
         {
-            if (e.KeyCode == Keys.F && e.Control)
+            if( e.KeyCode == Keys.F && e.Control )
             {
                 ShowFind();
             }
@@ -519,17 +520,17 @@ namespace EPocalipse.Json.Viewer
             txtFind.Focus();
         }
 
-        private void findToolStripMenuItem_Click(object sender, EventArgs e)
+        private void findToolStripMenuItem_Click( object sender, EventArgs e )
         {
             ShowFind();
         }
 
-        private void expandallToolStripMenuItem_Click(object sender, EventArgs e)
+        private void expandallToolStripMenuItem_Click( object sender, EventArgs e )
         {
             tvJson.BeginUpdate();
             try
             {
-                if (tvJson.SelectedNode != null)
+                if( tvJson.SelectedNode != null )
                 {
                     TreeNode topNode = tvJson.TopNode;
                     tvJson.SelectedNode.ExpandAll();
@@ -542,21 +543,21 @@ namespace EPocalipse.Json.Viewer
             }
         }
 
-        private void tvJson_MouseDown(object sender, MouseEventArgs e)
+        private void tvJson_MouseDown( object sender, MouseEventArgs e )
         {
-            if (e.Button == MouseButtons.Right)
+            if( e.Button == MouseButtons.Right )
             {
-                TreeNode node = tvJson.GetNodeAt(e.Location);
-                if (node != null)
+                TreeNode node = tvJson.GetNodeAt( e.Location );
+                if( node != null )
                 {
                     tvJson.SelectedNode = node;
                 }
             }
         }
 
-        private void rightToolStripMenuItem_Click(object sender, EventArgs e)
+        private void rightToolStripMenuItem_Click( object sender, EventArgs e )
         {
-            if (sender == mnuShowOnBottom)
+            if( sender == mnuShowOnBottom )
             {
                 spcViewer.Orientation = Orientation.Horizontal;
                 mnuShowOnRight.Checked = false;
@@ -568,117 +569,117 @@ namespace EPocalipse.Json.Viewer
             }
         }
 
-        private void cbVisualizers_Format(object sender, ListControlConvertEventArgs e)
+        private void cbVisualizers_Format( object sender, ListControlConvertEventArgs e )
         {
-            e.Value = ((IJsonViewerPlugin)e.ListItem).DisplayName;
+            e.Value = ( (IJsonViewerPlugin)e.ListItem ).DisplayName;
         }
 
-        private void mnuTree_Opening(object sender, CancelEventArgs e)
+        private void mnuTree_Opening( object sender, CancelEventArgs e )
         {
-            mnuFind.Enabled = (GetRootNode() != null);
-            mnuExpandAll.Enabled = (GetSelectedTreeNode() != null);
+            mnuFind.Enabled = ( GetRootNode() != null );
+            mnuExpandAll.Enabled = ( GetSelectedTreeNode() != null );
 
             mnuCopy.Enabled = mnuExpandAll.Enabled;
             mnuCopyValue.Enabled = mnuExpandAll.Enabled;
         }
 
-        private void btnCopy_Click(object sender, EventArgs e)
+        private void btnCopy_Click( object sender, EventArgs e )
         {
             string text;
-            if (txtJson.SelectionLength > 0)
+            if( txtJson.SelectionLength > 0 )
                 text = txtJson.SelectedText;
             else
                 text = txtJson.Text;
-            Clipboard.SetText(text);
+            Clipboard.SetText( text );
         }
 
-        private void btnPaste_Click(object sender, EventArgs e)
+        private void btnPaste_Click( object sender, EventArgs e )
         {
             txtJson.Text = Clipboard.GetText();
         }
 
-        private void mnuCopy_Click(object sender, EventArgs e)
+        private void mnuCopy_Click( object sender, EventArgs e )
         {
             JsonViewerTreeNode node = GetSelectedTreeNode();
-            if (node != null)
+            if( node != null )
             {
-                Clipboard.SetText(node.Text);
+                Clipboard.SetText( node.Text );
             }
         }
 
-        private void mnuCopyName_Click(object sender, EventArgs e)
+        private void mnuCopyName_Click( object sender, EventArgs e )
         {
             JsonViewerTreeNode node = GetSelectedTreeNode();
 
-            if (node != null && node.JsonObject.Id != null)
+            if( node != null && node.JsonObject.Id != null )
             {
                 JsonObject obj = node.Tag as JsonObject;
-                Clipboard.SetText(obj.Id);
+                Clipboard.SetText( obj.Id );
             }
             else
             {
-                Clipboard.SetText("");
+                Clipboard.SetText( "" );
             }
 
         }
 
-        private void mnuCopyValue_Click(object sender, EventArgs e)
+        private void mnuCopyValue_Click( object sender, EventArgs e )
         {
             JsonViewerTreeNode node = GetSelectedTreeNode();
-            if (node != null && node.Tag != null)
+            if( node != null && node.Tag != null )
             {
                 JsonObject obj = node.Tag as JsonObject;
-                Clipboard.SetText(obj.Value.ToString());
+                Clipboard.SetText( obj.Value.ToString() );
             }
             else
             {
-                Clipboard.SetText("null");
+                Clipboard.SetText( "null" );
             }
         }
 
-        private void lblError_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void lblError_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
         {
-            if (lblError.Enabled && lblError.Tag != null)
+            if( lblError.Enabled && lblError.Tag != null )
             {
                 ErrorDetails err = (ErrorDetails)lblError.Tag;
-                MarkError(err);
+                MarkError( err );
             }
         }
 
-        private void removeNewLineMenuItem_Click(object sender, EventArgs e)
+        private void removeNewLineMenuItem_Click( object sender, EventArgs e )
         {
-            StripFromText('\n', '\r');
+            StripFromText( '\n', '\r' );
         }
 
-        private void removeSpecialCharsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void removeSpecialCharsToolStripMenuItem_Click( object sender, EventArgs e )
         {
             string text = txtJson.Text;
-            text = text.Replace(@"\""", @"""");
+            text = text.Replace( @"\""", @"""" );
             txtJson.Text = text;
         }
 
-        private void StripFromText(params char[] chars)
+        private void StripFromText( params char[] chars )
         {
             string text = txtJson.Text;
-            foreach (char ch in chars)
+            foreach( char ch in chars )
             {
-                text = text.Replace(ch.ToString(), "");
+                text = text.Replace( ch.ToString(), "" );
             }
             txtJson.Text = text;
         }
 
-        private void btnViewSelected_Click(object sender, EventArgs e)
+        private void btnViewSelected_Click( object sender, EventArgs e )
         {
-            if (btnViewSelected.Checked)
+            if( btnViewSelected.Checked )
                 _json = txtJson.SelectedText.Trim();
             else
                 _json = txtJson.Text.Trim();
             Redraw();
         }
 
-        private void txtJson_SelectionChanged(object sender, EventArgs e)
+        private void txtJson_SelectionChanged( object sender, EventArgs e )
         {
-            if (btnViewSelected.Checked && !ignoreSelChange)
+            if( btnViewSelected.Checked && !ignoreSelChange )
             {
                 _json = txtJson.SelectedText.Trim();
                 Redraw();
@@ -722,7 +723,7 @@ namespace EPocalipse.Json.Viewer
         private bool _init;
         private IJsonVisualizer _lastVisualizer;
 
-        public JsonViewerTreeNode(JsonObject jsonObject)
+        public JsonViewerTreeNode( JsonObject jsonObject )
         {
             _jsonObject = jsonObject;
         }
@@ -765,13 +766,13 @@ namespace EPocalipse.Json.Viewer
 
         internal void RefreshText()
         {
-            StringBuilder sb = new StringBuilder(_jsonObject.Text);
-            foreach (ICustomTextProvider textVisualizer in _textVisualizers)
+            StringBuilder sb = new StringBuilder( _jsonObject.Text );
+            foreach( ICustomTextProvider textVisualizer in _textVisualizers )
             {
                 try
                 {
-                    string customText = textVisualizer.GetText(_jsonObject);
-                    sb.Append(" (" + customText + ")");
+                    string customText = textVisualizer.GetText( _jsonObject );
+                    sb.Append( " (" + customText + ")" );
                 }
                 catch
                 {
@@ -779,7 +780,7 @@ namespace EPocalipse.Json.Viewer
                 }
             }
             string text = sb.ToString();
-            if (text != this.Text)
+            if( text != this.Text )
                 this.Text = text;
         }
 
