@@ -68,7 +68,7 @@ namespace EPocalipse.Json.JsonView
         }
 
         /// <summary>
-        /// Open File Dialog  for Yahoo! Pipe files or JSON files
+        /// Open File Dialog for JSON files or Yahoo! Pipe files
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -77,7 +77,7 @@ namespace EPocalipse.Json.JsonView
         {
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Filter =
-               "Yahoo! Pipe files (*.run)|*.run|json files (*.json)|*.json|All files (*.*)|*.*";
+               "json files (*.json)|*.json|Yahoo! Pipe files (*.run)|*.run|All files (*.*)|*.*";
             dialog.InitialDirectory = Application.StartupPath;
             dialog.Title = "Select a JSON file";
             if (dialog.ShowDialog() == DialogResult.OK)
